@@ -1,4 +1,5 @@
 import "./App.css";
+import { useState } from "react";
 import List from "./components/List";
 import Search from "./components/Search";
 
@@ -22,12 +23,20 @@ const stories = [
     objectID: 1,
   },
 ];
+	const [searchTerm, setSearchTerm] = useState('')
+
+	const handleSearch = event => {
+		setSearchTerm(event.target.value)
+	}
+
+	const searchedStories = stories.filter(story => story.title.includes(searchTerm))
+
   return (
     <div>
       <h1>My Hacker Stories</h1>
-			<Search />
+			<Search onSearch={handleSearch} />
       <hr />
-			<List list={stories} />
+			<List list={searchedStories} />
     </div>
   );
 }
