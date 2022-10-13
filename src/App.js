@@ -1,7 +1,8 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import List from "./components/List";
 import Search from "./components/Search";
+import { useSemiPersistentState } from './hooks/useSemiPersistentState'
 
 
 function App() {
@@ -23,18 +24,22 @@ const stories = [
     objectID: 1,
   },
 ];
-	const [searchTerm, setSearchTerm] = useState('')
+	const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React')
+
+	useEffect(() => {
+		localStorage.setItem('search', searchTerm)
+	}, [searchTerm])
 
 	const handleSearch = event => {
 		setSearchTerm(event.target.value)
 	}
 
-	const searchedStories = stories.filter(story => story.title.includes(searchTerm))
+	const searchedStories = stories.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
     <div>
       <h1>My Hacker Stories</h1>
-			<Search onSearch={handleSearch} />
+			<Search search={searchTerm} onSearch={handleSearch} />
       <hr />
 			<List list={searchedStories} />
     </div>
