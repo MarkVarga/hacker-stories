@@ -1,4 +1,5 @@
 import axios from "axios";
+import { sortBy } from 'lodash'
 import "./App.css";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import List from "./components/List";
@@ -47,6 +48,24 @@ function App() {
     isLoading: false,
     isError: false,
   });
+  const [sort, setSort] = useState("NONE");
+
+  const handleSort = (sortKey) => {
+    setSort(sortKey);
+  };
+
+	const SORTS = {
+		NONE: (sortedList) => sortedList,
+		TITLE: (sortedList) => sortBy(sortedList, 'title'),
+		AUTHOR: (sortedList) => sortBy(sortedList, 'author'),
+		COMMENT: (sortedList) => sortBy(sortedList, 'num_comments').reverse(),
+		POINT: (sortedList) => sortBy(sortedList, 'points').reverse(),
+	}
+
+	const sortFunction = SORTS[sort]
+	const sortedList = sortFunction(stories.data)
+
+	console.log('sortedlist', sortedList)
 
   const handleFetchStories = useCallback(async () => {
     dispatchStories({ type: "STORIES_FETCH_INIT" });
@@ -101,7 +120,7 @@ function App() {
       {stories.isLoading ? (
         <p>Loading...</p>
       ) : (
-        <List list={stories.data} onRemoveItem={handleRemoveStory} />
+        <List handleSort={handleSort} list={sortedList} onRemoveItem={handleRemoveStory} />
       )}
     </div>
   );
