@@ -48,10 +48,14 @@ function App() {
     isLoading: false,
     isError: false,
   });
-  const [sort, setSort] = useState("NONE");
+	const [sort, setSort] = useState({
+		sortKey: "NONE",
+		isReverse: false
+	});
 
   const handleSort = (sortKey) => {
-    setSort(sortKey);
+		const isReverse = sort.sortKey === sortKey && !sort.isReverse
+		setSort({ sortKey, isReverse });
   };
 
 	const SORTS = {
@@ -62,10 +66,8 @@ function App() {
 		POINT: (sortedList) => sortBy(sortedList, 'points').reverse(),
 	}
 
-	const sortFunction = SORTS[sort]
-	const sortedList = sortFunction(stories.data)
-
-	console.log('sortedlist', sortedList)
+	const sortFunction = SORTS[sort.sortKey]
+	const sortedList = sort.isReverse ? sortFunction(stories.data).reverse() : sortFunction(stories.data)
 
   const handleFetchStories = useCallback(async () => {
     dispatchStories({ type: "STORIES_FETCH_INIT" });
