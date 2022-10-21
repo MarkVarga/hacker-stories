@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Item from "./Item";
 
 const List = ({ list, onRemoveItem, handleSort }) => {
